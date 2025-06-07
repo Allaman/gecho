@@ -1,3 +1,3 @@
-FROM scratch
-ENTRYPOINT ["/gecho"]
+FROM alpine:latest
 COPY gecho /
+ENTRYPOINT ["/gecho"]
