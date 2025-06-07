@@ -9,7 +9,7 @@ go run .
 ```
 
 ```sh
-docker run --rm --name gecho -p 8080:8080 -p 8081:8081 allaman/gecho
+docker run --rm --name gecho -p 8080:8080 -p 8081:8081 allaman/gecho:main # or ghcr.io/allaman/gecho:main
 ```
 
 ## Configuration
