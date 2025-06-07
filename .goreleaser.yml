@@ -1,0 +1,55 @@
+---
+project_name: gecho
+env:
+  - CGO_ENABLED=0
+builds:
+  - binary: gecho
+    id: gecho
+    main: ./
+    ldflags:
+      - -X main.Version={{ .Version }}
+    targets:
+      - darwin_amd64
+      - darwin_arm64
+      - linux_amd64
+      - linux_arm64
+      - windows_amd64
+archives:
+  - format: binary
+    name_template: "{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+checksum:
+  algorithm: sha256
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^ci:"
+release:
+  name_template: "{{ .ProjectName }}-{{ .Version }}"
+  header: |
+    ## {{ .Version }} ({{ .Date }})
+    New {{ .Version }} release!
+  footer: |
+    ## Release Notes
+    Please read the [RELEASE_NOTES](https://github.com/allaman/gecho/blob/master/RELEASE-NOTES.md) which contain among other things important information for who is upgrading from previous releases.
+    ## Thanks!
+dockers:
+  - image_templates:
+      - "allaman/{{ .ProjectName }}:{{ .Version }}-amd64"
+    use: buildx
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/amd64"
+  - image_templates:
+      - "allaman/{{ .ProjectName }}:{{ .Version }}-arm64v8"
+    use: buildx
+    goarch: arm64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+docker_manifests:
+  - name_template: allaman/{{ .ProjectName }}:{{ .Version }}
+    image_templates:
+      - allaman/{{ .ProjectName }}:{{ .Version }}-amd64
+      - allaman/{{ .ProjectName }}:{{ .Version }}-arm64v8

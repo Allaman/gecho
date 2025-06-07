@@ -1,0 +1,13 @@
+name: Markdown
+
+on: [push, pull_request]
+
+jobs:
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint Markdown files
+        uses: actionshub/markdownlint@main
+        with:
+          filesToIgnoreRegex: LICENSE.md
