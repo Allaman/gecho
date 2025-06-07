@@ -52,7 +52,7 @@ jobs:
       - name: Install dependencies
         run: go mod tidy
       - name: Run go build
-        run: go build .
+        run: CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o gecho .
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
