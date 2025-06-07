@@ -20,19 +20,19 @@ go run . <http-addr:http-port> <tcp-addr:tcp-port>
 
 ## API
 
-http hello world
+HTTP Hello World - returns hostname and request headers
 
 ```sh
 curl localhost:8080
 ```
 
-HTTP echo
+HTTP echo - returns payload
 
 ```sh
 curl -X POST -d "hello world" localhost:8080/echo
 ```
 
-TCP echo
+TCP echo - returns payload
 
 ```sh
 echo "hello world" | nc localhost 8081
