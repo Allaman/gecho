@@ -28,7 +28,11 @@ func getReqHeaders(r *http.Request) string {
 }
 
 func handleTCPconn(conn net.Conn) {
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			slog.Warn("Failed to close connection", "error", err.Error())
+		}
+	}()
 	clientIP := conn.RemoteAddr().String()
 	reader := bufio.NewReader(conn)
 	for {
@@ -70,7 +74,9 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		slog.Info("Returned home to client", "source_ip", clientIP)
 	} else {
-		fmt.Fprintf(w, "Ignoring HTTP method %s\n", r.Method)
+		if _, err := fmt.Fprintf(w, "Ignoring HTTP method %s\n", r.Method); err != nil {
+			slog.Warn("Failed to write HTTP response", "source_ip", clientIP, "error", err.Error())
+		}
 		slog.Info("Served HTTP info page", "source_ip", clientIP)
 	}
 }
@@ -95,7 +101,9 @@ func echoHandler(w http.ResponseWriter, r *http.Request) {
 		slog.Info("Echoed data to HTTP client", "source_ip", clientIP, "bytes", len(body))
 	} else {
 		w.Header().Set("Content-Type", "text/plain")
-		fmt.Fprintf(w, "Echo server is running. Send POST request to echo content.\n")
+		if _, err := fmt.Fprintf(w, "Echo server is running. Send POST request to echo content.\n"); err != nil {
+			slog.Warn("Failed to write HTTP response", "source_ip", clientIP, "error", err.Error())
+		}
 		slog.Info("Served HTTP info page", "source_ip", clientIP)
 	}
 }
@@ -108,7 +116,11 @@ func startTCPServer(wg *sync.WaitGroup) {
 		slog.Error("TCP server error", "error", err.Error())
 		os.Exit(1)
 	}
-	defer listener.Close()
+	defer func() {
+		if err := listener.Close(); err != nil {
+			slog.Warn("Failed to close connection", "error", err.Error())
+		}
+	}()
 
 	slog.Info("TCP server listening", "address", tcpAddr)
 
