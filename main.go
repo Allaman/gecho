@@ -67,7 +67,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodGet {
-		_, err := w.Write([]byte("Hello from " + hostname + "\n" + "Request headers: " + headers + "\n"))
+		_, err := w.Write([]byte("Hello from " + hostname + "\n" + "Request headers: " + headers + "\n" + "Your IP: " + clientIP + "\n"))
 		if err != nil {
 			slog.Warn("HTTP write error", "source_ip", clientIP, "error", err.Error())
 			return
